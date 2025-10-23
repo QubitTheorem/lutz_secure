@@ -1,0 +1,28 @@
+# this script no longer works by itself
+# this is a script designed to be integerated into another
+
+
+
+# defines pw as an empty string
+pw=""
+# iterates trhough a loop 10 times
+for i in {1..10}; do
+	# concatonates a random number from 0-9 to pw
+	pw+=$(( RANDOM % 10 ))
+done
+# defines what the email will look like and then sends it
+(
+  printf 'From: %s\n' "your.email@yourdomain.com"
+  printf 'To: %s\n' "lrrotz06@gmail.com"
+  printf 'Subject: %s\n' "Lutz security password"
+  printf '\n'      # blank line separates headers from body
+  printf 'Your password is: %s\n' "$pw"
+) |msmtp --account=gmail lucarotz06@gmail.com
+# makes the system_pw file empty
+>system_pw
+# adds the hash of the new password to system_pw
+echo -n "$pw" | sha512sum >> system_pw
+# decrypts with old password and encrypts with new one
+openssl enc -d -aes-256-cbc -pbkdf2 -in super_secret.txt.enc -out super_secret.txt -pass pass:"$user_password"
+openssl enc -aes-256-cbc -pbkdf2 -in super_secret.txt -out super_secret.txt.enc -pass pass:"$pw"
+
