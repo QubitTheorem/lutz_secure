@@ -1,0 +1,31 @@
+# configured for use with google authenticator
+# imports needed libraries
+import pyotp
+import qrcode
+# asks for user
+user = input("User: ")
+# checks if the user has a secret already
+try:
+        with open(user + "_lutz_prof.txt", "r") as prof_file:
+                secret = prof_file.readline().strip()
+                totp = pyotp.TOTP(secret)
+except:
+        with open(user + "_lutz_prof.txt", "w") as prof_file:
+                secret = pyotp.random_base32()
+                prof_file.write(secret)
+                totp = pyotp.TOTP(secret)
+                totp_uri = totp.provisioning_uri(name="lutzsecure@gmail.com", issuer_name="Lutz Secure")
+                # creates the QR code that will be displayed
+                code = qrcode.QRCode()
+                code.add_data(totp_uri)
+                code.make()
+                code.print_ascii(invert=True)
+
+user_input = input("Authenticator code: ")
+if totp.verify(int(user_input)) == True:
+        print("Authenticator code correct.")
+else:
+        print("Authenticator code no longer valid")
+prof_file.close
+
+# use extension here
