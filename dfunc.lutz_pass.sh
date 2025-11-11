@@ -79,11 +79,11 @@ done
 # defines what the email will look like and then sends it
 (
   printf 'From: %s\n' "your.email@yourdomain.com"
-  printf 'To: %s\n' "lrrotz06@gmail.com"
+  printf 'To: %s\n' "email.com"
   printf 'Subject: %s\n' "Lutz security password"
   printf '\n'      # blank line separates headers from body
   printf 'Your password is: %s\n' "$pc"
-) |msmtp --account=gmail lucarotz06@gmail.com
+) |msmtp --account=gmail email@gmail.com
 # adds the hash of the new code to email_code
 echo -n "$pc" | sha512sum > email_code
 
